@@ -4979,41 +4979,38 @@ function App() {
 
 
 // ── PEDRO CLOUD SYNC ─────────────────────────────────────────────────────────
-// ── FREE SYNC via kvdb.io (no account, no billing) ───────────────────────────
-// Each Pedro localStorage key is stored as its own kvdb key (code+":"+key) to
-// stay under kvdb's 16KB-per-value limit. A shared public bucket is used; your
-// SYNC CODE is the privacy boundary, so make it long and unguessable.
-var PEDRO_BUCKET = "pedro_sync_v1_8x4k2"; // shared public bucket id
-var KVDB = "https://kvdb.io/" + PEDRO_BUCKET + "/";
+// ── FREE SYNC via jsonblob.com (no account, no bucket, no size cap) ───────────
+// First device: Pedro creates a blob and the returned blob ID becomes your SYNC
+// CODE. Other devices: enter that same code to pull. The whole dataset goes in
+// one blob. Note: jsonblob removes blobs not accessed for 75 days (fine for
+// daily use). Your sync code (the blob ID) is the privacy boundary.
+var JSONBLOB = "https://jsonblob.com/api/jsonBlob";
 function getSyncCode() { return localStorage.getItem('pedro_sync_code') || ''; }
 
-function pedroSyncKeys() {
-    var keys = [];
+function pedroSyncPayload() {
+    var data = {};
     var skip = { 'pedro_sync_code': 1, 'pedro_api_key': 1, 'pedro_gemini_key': 1, 'pedro_pplx_key': 1, 'pedro_last_sync': 1, 'pedro_notif_seen': 1, 'plang_migrated': 1, 'pedro_dim': 1, 'pedro_brain': 1, 'pedro_a2hs_dismissed': 1 };
     for (var i = 0; i < localStorage.length; i++) {
         var k = localStorage.key(i);
         if (!k || skip[k]) continue;
-        if (k.charAt(0) === 'p' && k.indexOf('pedro_') !== 0) keys.push(k);
+        if (k.charAt(0) === 'p' && k.indexOf('pedro_') !== 0) { var v = localStorage.getItem(k); if (v != null) data[k] = v; }
     }
-    return keys;
+    return data;
 }
 
 function pedroCloudSave() {
     var code = getSyncCode();
-    if (!code) return;
+    if (!code) return; // no sync set up yet
     var dotNow = document.getElementById('pedro-sync-dot');
     if (dotNow) { dotNow.style.background = "#ffa500"; dotNow.title = "Saving…"; }
     if (_syncTimer) clearTimeout(_syncTimer);
     _syncTimer = setTimeout(function() {
-        var keys = pedroSyncKeys();
-        // keep an index of which keys exist, so other devices know what to pull
-        var ops = [{ set: code + ":__index__", value: JSON.stringify(keys) }];
-        keys.forEach(function(k) { var v = localStorage.getItem(k); if (v != null) ops.push({ set: code + ":" + k, value: v }); });
-        // kvdb transaction API sets many keys atomically
-        fetch(KVDB, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ txn: ops }),
+        var body = JSON.stringify(pedroSyncPayload());
+        // PUT updates the existing blob whose id == sync code
+        fetch(JSONBLOB + "/" + code, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json", "Accept": "application/json" },
+            body: body,
         }).then(function(r){
             var dot = document.getElementById('pedro-sync-dot');
             if (r.ok) { if (dot) { dot.style.background = "#39ff14"; dot.title = "All saved · " + new Date().toLocaleTimeString(); } try { localStorage.setItem('pedro_last_sync', String(Date.now())); } catch(e){} }
@@ -5025,21 +5022,36 @@ function pedroCloudSave() {
     }, 1200);
 }
 
+// Create a brand-new blob → returns the new sync code (blob id), or null
+function pedroCloudCreate() {
+    var body = JSON.stringify(pedroSyncPayload());
+    return fetch(JSONBLOB, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: body,
+    }).then(function(r){
+        if (!r.ok) return null;
+        // the blob id is the last path segment of the Location header
+        var loc = r.headers.get("Location") || "";
+        var id = loc.split("/").pop();
+        if (id) { localStorage.setItem('pedro_sync_code', id); return id; }
+        return null;
+    }).catch(function(){ return null; });
+}
+
 function pedroCloudLoad(showReload) {
     var code = getSyncCode();
     if (!code) return Promise.resolve(false);
-    // 1) get the index of keys, 2) fetch each key's value
-    return fetch(KVDB + code + ":__index__")
-        .then(function(r){ if (!r.ok) throw new Error("no data"); return r.text(); })
-        .then(function(idxRaw){
-            var keys = [];
-            try { keys = JSON.parse(idxRaw); } catch(e) { keys = []; }
-            if (!keys.length) return false;
-            return Promise.all(keys.map(function(k){
-                return fetch(KVDB + code + ":" + k).then(function(r){ return r.ok ? r.text() : null; }).then(function(v){ if (v != null) { try { localStorage.setItem(k, v); } catch(e){} } });
-            })).then(function(){ if (showReload) location.reload(); return true; });
+    return fetch(JSONBLOB + "/" + code, { headers: { "Accept": "application/json" } })
+        .then(function(r){ if (!r.ok) throw new Error("no data"); return r.json(); })
+        .then(function(data){
+            if (!data || typeof data !== "object") return false;
+            Object.keys(data).forEach(function(k){ try { localStorage.setItem(k, data[k]); } catch(e){} });
+            if (showReload) location.reload();
+            return true;
         }).catch(function(){ return false; });
 }
+window.pedroCloudCreate = pedroCloudCreate;
 var _syncTimer = null;
 
 function showSyncSetup() {
@@ -5047,32 +5059,36 @@ function showSyncSetup() {
     var cur = getSyncCode();
     var modal = document.createElement('div');
     modal.id = 'pedro-sync-modal';
-    modal.style.cssText = 'position:fixed;inset:0;background:rgba(2,12,20,0.97);z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;';
-    modal.innerHTML = '<div style="max-width:440px;width:100%;background:#0a1420;border:1px solid rgba(57,255,20,0.4);padding:28px;box-sizing:border-box;border-radius:18px;"><div style="font-family:Sora,sans-serif;font-size:17px;color:#39ff14;font-weight:700;margin-bottom:6px;">☁️ CLOUD SYNC</div><div style="font-family:Space Grotesk,sans-serif;font-size:11px;color:#4a7a8a;margin-bottom:16px;">Your data, safe across all devices</div><p style="font-family:Space Grotesk,sans-serif;font-size:12px;color:#c8eaf5;margin-bottom:10px;line-height:1.7;">Pick a private sync code (like a password — at least 6 characters). Use the SAME code on every device to share your data.</p><input id="pedro-sync-input" type="text" value="' + cur + '" placeholder="e.g. sean-pedro-2026" style="width:100%;background:rgba(0,0,0,0.5);border:1px solid rgba(57,255,20,0.3);color:#c8eaf5;font-family:monospace;font-size:14px;padding:12px;margin-bottom:14px;outline:none;box-sizing:border-box;border-radius:10px;" /><div style="display:flex;gap:8px;"><button onclick="saveSyncCode(false)" style="flex:1;background:rgba(57,255,20,0.08);border:1px solid #39ff14;color:#39ff14;font-family:Space Grotesk,sans-serif;font-weight:600;font-size:13px;padding:12px;cursor:pointer;border-radius:10px;">SAVE & PUSH THIS DEVICE</button></div><button onclick="saveSyncCode(true)" style="width:100%;margin-top:8px;background:rgba(0,212,255,0.08);border:1px solid #00d4ff;color:#00d4ff;font-family:Space Grotesk,sans-serif;font-weight:600;font-size:13px;padding:12px;cursor:pointer;border-radius:10px;">PULL DATA FROM CLOUD (other device)</button><div id="pedro-sync-msg" style="font-family:Space Grotesk,sans-serif;font-size:11px;margin-top:10px;color:#4a7a8a;min-height:16px;"></div><p style="font-family:Space Grotesk,sans-serif;font-size:10px;color:#4a7a8a;margin-top:12px;line-height:1.6;">First device: type a code, tap SAVE & PUSH. New device: type the SAME code, tap PULL.</p></div>';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(10,26,51,0.97);z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;';
+    var curBlock = cur ? '<div style="background:rgba(57,255,20,0.06);border:1px solid rgba(57,255,20,0.3);border-radius:10px;padding:12px;margin-bottom:14px;"><div style="font-family:Space Grotesk,sans-serif;font-size:10px;color:#6f9bad;margin-bottom:4px;">YOUR SYNC CODE (tap to copy — enter it on your other device)</div><div onclick="pedroCopyCode()" id="pedro-code-display" style="font-family:monospace;font-size:14px;color:#39ff14;word-break:break-all;cursor:pointer;">' + cur + '</div></div>' : '';
+    modal.innerHTML = '<div style="max-width:440px;width:100%;background:#0f2240;border:1px solid rgba(57,255,20,0.4);padding:28px;box-sizing:border-box;border-radius:18px;max-height:88vh;overflow-y:auto;"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;"><span style="font-family:Sora,sans-serif;font-size:17px;color:#39ff14;font-weight:700;">☁️ CLOUD SYNC</span><span onclick="pedroCloseSync()" style="cursor:pointer;color:#6f9bad;font-size:22px;">×</span></div><div style="font-family:Space Grotesk,sans-serif;font-size:11px;color:#6f9bad;margin-bottom:16px;">Your data, across all your devices — free, no account</div>' + curBlock + '<p style="font-family:Space Grotesk,sans-serif;font-size:12px;color:#b6d4e0;margin-bottom:10px;line-height:1.7;"><b style="color:#39ff14;">First device:</b> tap Create — Pedro makes a sync code and saves your data to the cloud. Copy that code.</p><button onclick="pedroDoCreate()" style="width:100%;background:rgba(57,255,20,0.08);border:1px solid #39ff14;color:#39ff14;font-family:Space Grotesk,sans-serif;font-weight:600;font-size:13px;padding:12px;cursor:pointer;border-radius:10px;margin-bottom:16px;">✨ CREATE SYNC FOR THIS DEVICE</button><p style="font-family:Space Grotesk,sans-serif;font-size:12px;color:#b6d4e0;margin-bottom:10px;line-height:1.7;"><b style="color:#00d4ff;">Other device:</b> paste the sync code from your first device, then Pull.</p><input id="pedro-sync-input" type="text" value="" placeholder="paste sync code here" style="width:100%;background:rgba(0,0,0,0.5);border:1px solid rgba(0,212,255,0.3);color:#b6d4e0;font-family:monospace;font-size:14px;padding:12px;margin-bottom:10px;outline:none;box-sizing:border-box;border-radius:10px;" /><button onclick="pedroDoPull()" style="width:100%;background:rgba(0,212,255,0.08);border:1px solid #00d4ff;color:#00d4ff;font-family:Space Grotesk,sans-serif;font-weight:600;font-size:13px;padding:12px;cursor:pointer;border-radius:10px;">⬇ PULL DATA FROM CLOUD</button><div id="pedro-sync-msg" style="font-family:Space Grotesk,sans-serif;font-size:11px;margin-top:12px;color:#6f9bad;min-height:16px;line-height:1.5;"></div></div>';
     document.body.appendChild(modal);
 }
-
-function saveSyncCode(pull) {
+function pedroCloseSync(){ var m=document.getElementById('pedro-sync-modal'); if(m) m.remove(); }
+function pedroCopyCode(){ var c=getSyncCode(); if(c && navigator.clipboard){ navigator.clipboard.writeText(c); if(window.pedroToast) window.pedroToast('Code copied'); } }
+function pedroDoCreate(){
+    var msg = document.getElementById('pedro-sync-msg');
+    if(msg){ msg.style.color="#39ff14"; msg.textContent="Creating your sync & uploading data…"; }
+    pedroCloudCreate().then(function(id){
+        if (id) { if(msg){ msg.style.color="#39ff14"; msg.innerHTML="Done! Your sync code:<br><b style='color:#39ff14;word-break:break-all;'>"+id+"</b><br>Copy it to your other device."; } var d=document.getElementById('pedro-sync-dot'); if(d){ d.style.background="#39ff14"; } }
+        else { if(msg){ msg.style.color="#ff3a3a"; msg.textContent="Couldn't reach the sync service. Check your connection and try again."; } }
+    });
+}
+function pedroDoPull(){
     var code = (document.getElementById('pedro-sync-input').value || '').trim();
     var msg = document.getElementById('pedro-sync-msg');
-    if (code.length < 6) { if(msg){ msg.style.color="#ff3a3a"; msg.textContent="Code must be at least 6 characters."; } return; }
+    if (!code) { if(msg){ msg.style.color="#ff3a3a"; msg.textContent="Paste your sync code first."; } return; }
     localStorage.setItem('pedro_sync_code', code);
-    if (pull) {
-        if(msg){ msg.style.color="#00d4ff"; msg.textContent="Pulling from cloud..."; }
-        pedroCloudLoad(false).then(function(ok){
-            if (ok) { if(msg){ msg.style.color="#39ff14"; msg.textContent="Pulled! Reloading..."; } setTimeout(function(){ location.reload(); }, 800); }
-            else { if(msg){ msg.style.color="#ffa500"; msg.textContent="No cloud data for that code yet (or empty). It'll be created when you save."; } }
-        });
-    } else {
-        if(msg){ msg.style.color="#39ff14"; msg.textContent="Saved! Pushing this device's data to cloud..."; }
-        pedroCloudSave();
-        setTimeout(function(){ var m=document.getElementById('pedro-sync-modal'); if(m) m.remove(); }, 1200);
-    }
+    if(msg){ msg.style.color="#00d4ff"; msg.textContent="Pulling from cloud…"; }
+    pedroCloudLoad(false).then(function(ok){
+        if (ok) { if(msg){ msg.style.color="#39ff14"; msg.textContent="Pulled! Reloading…"; } setTimeout(function(){ location.reload(); }, 800); }
+        else { if(msg){ msg.style.color="#ffa500"; msg.textContent="No data found for that code. Double-check it matches your other device exactly."; } }
+    });
 }
-window.showSyncSetup = showSyncSetup;
-window.saveSyncCode = saveSyncCode;
-window.pedroCloudSave = pedroCloudSave;
-window.pedroCloudLoad = pedroCloudLoad;
+window.pedroCloseSync = pedroCloseSync;
+window.pedroCopyCode = pedroCopyCode;
+window.pedroDoCreate = pedroDoCreate;
+window.pedroDoPull = pedroDoPull;
 
 
 // ── PICTURE-IN-PICTURE MINI MODE ─────────────────────────────────────────────
