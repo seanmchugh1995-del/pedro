@@ -135,14 +135,16 @@ function showApiKeySetup() {
     const modal = document.createElement('div');
     modal.id = 'pedro-key-modal';
     modal.style.cssText = 'position:fixed;inset:0;background:rgba(2,12,20,0.97);z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;';
-    modal.innerHTML = '<div style="max-width:460px;width:100%;background:#0a1420;border:1px solid rgba(0,212,255,0.4);padding:28px;box-sizing:border-box;border-radius:18px;"><div style="font-family:Sora,sans-serif;font-size:17px;color:#00d4ff;font-weight:700;letter-spacing:2px;margin-bottom:6px;">PEDRO SETUP</div><div style="font-family:Space Grotesk,sans-serif;font-size:11px;color:#4a7a8a;letter-spacing:1px;margin-bottom:18px;">ADD AT LEAST ONE API KEY</div><p style="font-family:Space Grotesk,sans-serif;font-size:12px;color:#c8eaf5;margin-bottom:6px;">Anthropic key (primary) — console.anthropic.com</p><input id="pedro-key-input" type="password" placeholder="sk-ant-api03-..." style="width:100%;background:rgba(0,0,0,0.5);border:1px solid rgba(0,212,255,0.3);color:#c8eaf5;font-family:monospace;font-size:13px;padding:12px;margin-bottom:14px;outline:none;box-sizing:border-box;border-radius:10px;" /><p style="font-family:Space Grotesk,sans-serif;font-size:12px;color:#c8eaf5;margin-bottom:6px;">Gemini key (free fallback) — aistudio.google.com/apikey</p><input id="pedro-gemini-input" type="password" placeholder="AIza... (optional)" style="width:100%;background:rgba(0,0,0,0.5);border:1px solid rgba(168,85,247,0.3);color:#c8eaf5;font-family:monospace;font-size:13px;padding:12px;margin-bottom:14px;outline:none;box-sizing:border-box;border-radius:10px;" /><p style="font-family:Space Grotesk,sans-serif;font-size:12px;color:#c8eaf5;margin-bottom:6px;">Perplexity key (live web search, optional) — perplexity.ai/settings/api</p><input id="pedro-pplx-input" type="password" placeholder="pplx-... (optional)" style="width:100%;background:rgba(0,0,0,0.5);border:1px solid rgba(147,51,234,0.3);color:#c8eaf5;font-family:monospace;font-size:13px;padding:12px;margin-bottom:14px;outline:none;box-sizing:border-box;border-radius:10px;" /><button onclick="savePedroKey()" style="width:100%;background:rgba(0,212,255,0.06);border:1px solid #00d4ff;color:#00d4ff;font-family:Space Grotesk,sans-serif;font-weight:600;font-size:13px;padding:12px;cursor:pointer;border-radius:10px;">SAVE & LAUNCH</button><div id="pedro-key-msg" style="font-family:Space Grotesk,sans-serif;font-size:11px;margin-top:10px;color:#ff3a3a;min-height:16px;"></div><p style="font-family:Space Grotesk,sans-serif;font-size:10px;color:#4a7a8a;margin-top:12px;line-height:1.6;">Pedro uses Anthropic first, and automatically falls back to Gemini if you run out of credit. Both stored on this device only.</p></div>';
+    modal.innerHTML = '<div style="max-width:460px;width:100%;background:#0a1420;border:1px solid rgba(0,212,255,0.4);padding:28px;box-sizing:border-box;border-radius:18px;"><div style="font-family:Sora,sans-serif;font-size:17px;color:#00d4ff;font-weight:700;letter-spacing:2px;margin-bottom:6px;">PEDRO SETUP</div><div style="font-family:Space Grotesk,sans-serif;font-size:11px;color:#4a7a8a;letter-spacing:1px;margin-bottom:18px;">ADD AT LEAST ONE API KEY</div><p style="font-family:Space Grotesk,sans-serif;font-size:12px;color:#c8eaf5;margin-bottom:6px;">Anthropic key (primary) — console.anthropic.com</p><input id="pedro-key-input" type="password" placeholder="sk-ant-api03-..." style="width:100%;background:rgba(0,0,0,0.5);border:1px solid rgba(0,212,255,0.3);color:#c8eaf5;font-family:monospace;font-size:13px;padding:12px;margin-bottom:14px;outline:none;box-sizing:border-box;border-radius:10px;" /><p style="font-family:Space Grotesk,sans-serif;font-size:12px;color:#c8eaf5;margin-bottom:6px;">Gemini key (free fallback) — aistudio.google.com/apikey</p><input id="pedro-gemini-input" type="password" placeholder="AIza... (optional)" style="width:100%;background:rgba(0,0,0,0.5);border:1px solid rgba(168,85,247,0.3);color:#c8eaf5;font-family:monospace;font-size:13px;padding:12px;margin-bottom:14px;outline:none;box-sizing:border-box;border-radius:10px;" /><p style="font-family:Space Grotesk,sans-serif;font-size:12px;color:#c8eaf5;margin-bottom:6px;">Perplexity key (live web search, optional) — perplexity.ai/settings/api</p><input id="pedro-pplx-input" type="password" placeholder="pplx-... (optional)" style="width:100%;background:rgba(0,0,0,0.5);border:1px solid rgba(147,51,234,0.3);color:#c8eaf5;font-family:monospace;font-size:13px;padding:12px;margin-bottom:14px;outline:none;box-sizing:border-box;border-radius:10px;" /><p style="font-family:Space Grotesk,sans-serif;font-size:12px;color:#c8eaf5;margin-bottom:6px;">Tavily key (FREE live search, 1000/mo) — tavily.com</p><input id="pedro-tavily-input" type="password" placeholder="tvly-... (free, optional)" style="width:100%;background:rgba(0,0,0,0.5);border:1px solid rgba(16,185,129,0.4);color:#c8eaf5;font-family:monospace;font-size:13px;padding:12px;margin-bottom:14px;outline:none;box-sizing:border-box;border-radius:10px;" /><button onclick="savePedroKey()" style="width:100%;background:rgba(0,212,255,0.06);border:1px solid #00d4ff;color:#00d4ff;font-family:Space Grotesk,sans-serif;font-weight:600;font-size:13px;padding:12px;cursor:pointer;border-radius:10px;">SAVE & LAUNCH</button><div id="pedro-key-msg" style="font-family:Space Grotesk,sans-serif;font-size:11px;margin-top:10px;color:#ff3a3a;min-height:16px;"></div><p style="font-family:Space Grotesk,sans-serif;font-size:10px;color:#4a7a8a;margin-top:12px;line-height:1.6;">Pedro uses Anthropic first, and automatically falls back to Gemini if you run out of credit. Both stored on this device only.</p></div>';
     document.body.appendChild(modal);
     var _k = localStorage.getItem('pedro_api_key') || ''; var _g = localStorage.getItem('pedro_gemini_key') || '';
     var _ki = document.getElementById('pedro-key-input'); var _gi = document.getElementById('pedro-gemini-input');
     var _pi = document.getElementById('pedro-pplx-input'); var _p = localStorage.getItem('pedro_pplx_key') || '';
+    var _ti = document.getElementById('pedro-tavily-input'); var _t = localStorage.getItem('pedro_tavily_key') || '';
     if (_ki && _k) _ki.value = _k;
     if (_gi && _g) _gi.value = _g;
     if (_pi && _p) _pi.value = _p;
+    if (_ti && _t) _ti.value = _t;
     setTimeout(() => { if(_gi && _k && !_g) _gi.focus(); else if(_ki) _ki.focus(); }, 200);
 }
 function savePedroKey() {
@@ -152,9 +154,11 @@ function savePedroKey() {
     if (!key && !gkey) { if(msg) msg.textContent = 'Add at least one key (Anthropic or Gemini).'; return; }
     if (key && key.indexOf('sk-ant-') !== 0) { if(msg) msg.textContent = 'Anthropic key should start with sk-ant-'; return; }
     const pkey = (document.getElementById('pedro-pplx-input') ? document.getElementById('pedro-pplx-input').value || '' : '').trim();
+    const tkey = (document.getElementById('pedro-tavily-input') ? document.getElementById('pedro-tavily-input').value || '' : '').trim();
     if (key) localStorage.setItem('pedro_api_key', key);
     if (gkey) localStorage.setItem('pedro_gemini_key', gkey);
     if (pkey) localStorage.setItem('pedro_pplx_key', pkey);
+    if (tkey) localStorage.setItem('pedro_tavily_key', tkey);
     const modal = document.getElementById('pedro-key-modal'); if (modal) modal.remove();
 }
 function checkApiKey() { if (!getApiKey() && !localStorage.getItem('pedro_gemini_key')) setTimeout(showApiKeySetup, 600); }
@@ -835,17 +839,18 @@ function Fitness(_p) {
                                 React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8, marginBottom: 4 } },
                                     React.createElement("span", { style: { fontFamily: "Orbitron,monospace", fontSize: 10, color: tc.c, border: "1px solid " + tc.c, padding: "2px 6px" } }, tc.l),
                                     isPlanned ? React.createElement("span", { style: { fontFamily: "Orbitron,monospace", fontSize: 10, color: GOLD, border: "1px solid " + GOLD, padding: "2px 6px" } }, "\uD83D\uDCC5 PLANNED") : React.createElement("span", { style: { fontSize: 11 } }, "\u2705"),
-                                    React.createElement("span", { style: { fontWeight: 600, fontSize: 12, flex: 1 } }, w.name),
+                                    React.createElement("span", { onClick: () => viewItem("workout", w), style: { fontWeight: 600, fontSize: 12, flex: 1, cursor: "pointer" } }, w.name),
                                     React.createElement("span", { style: { fontFamily: "Share Tech Mono,monospace", fontSize: 10, color: MUT } }, w.date),
                                     React.createElement(EditBtn, { type: "workout", item: w }),
                                     React.createElement(Del, { onClick: () => saveWk(wk.filter(x => x.id !== w.id)) })),
-                                React.createElement("div", { style: { fontFamily: "Share Tech Mono,monospace", fontSize: 10, color: MUT } },
-                                    w.dur ? w.dur + " MIN" : "",
-                                    w.intensity ? " · RPE " + w.intensity : "",
-                                    w.loc ? " · " + w.loc : ""),
-                                w.notes ? React.createElement("div", { style: { fontSize: 11, opacity: 0.8, marginTop: 5, lineHeight: 1.5, whiteSpace: "pre-wrap" } },
-                                    w.notes.substring(0, 150),
-                                    w.notes.length > 150 ? "..." : "") : null,
+                                React.createElement("div", { onClick: () => viewItem("workout", w), style: { cursor: "pointer" } },
+                                    React.createElement("div", { style: { fontFamily: "Share Tech Mono,monospace", fontSize: 10, color: MUT } },
+                                        w.dur ? w.dur + " MIN" : "",
+                                        w.intensity ? " · RPE " + w.intensity : "",
+                                        w.loc ? " · " + w.loc : ""),
+                                    w.notes ? React.createElement("div", { style: { fontSize: 11, opacity: 0.8, marginTop: 5, lineHeight: 1.5, whiteSpace: "pre-wrap" } },
+                                        w.notes.substring(0, 150),
+                                        w.notes.length > 150 ? "… (tap to read)" : "") : null),
                                 isPlanned ? React.createElement("div", { style: { marginTop: 8 } },
                                     React.createElement("button", { onClick: () => saveWk(wk.map(x => x.id === w.id ? Object.assign(Object.assign({}, x), { status: "completed" }) : x)), style: { background: "none", border: "1px solid " + GRN, color: GRN, fontFamily: "Orbitron,monospace", fontSize: 10, letterSpacing: 1, padding: "5px 10px", cursor: "pointer" } }, "\u2705 MARK DONE")) : null));
                         }),
@@ -2548,20 +2553,24 @@ function Journal(_p) {
             React.createElement(Card, null,
                 React.createElement(CT, null, "Journal History"),
                 React.createElement("div", { className: "inner-scroll", className: "inner-scroll", style: { maxHeight: 520, overflowY: "auto" } },
-                    past.map(e => (React.createElement("div", { key: e.id, onClick: () => switchDate(e.date), style: { borderLeft: "3px solid " + CYN, padding: "10px 12px", marginBottom: 8, background: "rgba(255,255,255,0.02)", cursor: "pointer", borderRadius: 8 } },
-                        React.createElement("div", { style: { fontFamily: "Space Grotesk,sans-serif", fontSize: 10, color: MUT, marginBottom: 3 } }, e.date),
-                        e.line ? React.createElement("div", { style: { fontSize: 13, fontWeight: 600, color: TXT, fontStyle: "italic" } },
-                            "\"",
-                            e.line,
-                            "\"") : null,
-                        e.free ? React.createElement("div", { style: { fontSize: 11, color: TXT, opacity: 0.8, marginTop: 4 } },
-                            "\u270D\uFE0F ",
-                            e.free.substring(0, 80),
-                            e.free.length > 80 ? "…" : "") : null,
-                        e.actions ? React.createElement("div", { style: { fontSize: 11, color: MUT, marginTop: 4 } },
-                            "\u26A1 ",
-                            e.actions.substring(0, 80),
-                            e.actions.length > 80 ? "…" : "") : null))),
+                    past.map(e => (React.createElement("div", { key: e.id, style: { borderLeft: "3px solid " + CYN, padding: "10px 12px", marginBottom: 8, background: "rgba(255,255,255,0.02)", borderRadius: 8 } },
+                        React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8, marginBottom: 3 } },
+                            React.createElement("span", { style: { fontFamily: "Space Grotesk,sans-serif", fontSize: 10, color: MUT, flex: 1 } }, e.date),
+                            React.createElement("button", { onClick: () => switchDate(e.date), title: "Edit this day", style: { background: "none", border: "1px solid " + BRD, color: MUT, fontSize: 11, padding: "3px 8px", borderRadius: 7, cursor: "pointer" } }, "\u270E edit")),
+                        React.createElement("div", { onClick: () => viewItem("journal", e), style: { cursor: "pointer" } },
+                            e.line ? React.createElement("div", { style: { fontSize: 13, fontWeight: 600, color: TXT, fontStyle: "italic" } },
+                                "\"",
+                                e.line,
+                                "\"") : null,
+                            e.free ? React.createElement("div", { style: { fontSize: 11, color: TXT, opacity: 0.8, marginTop: 4 } },
+                                "\u270D\uFE0F ",
+                                e.free.substring(0, 80),
+                                e.free.length > 80 ? "…" : "") : null,
+                            e.actions ? React.createElement("div", { style: { fontSize: 11, color: MUT, marginTop: 4 } },
+                                "\u26A1 ",
+                                e.actions.substring(0, 80),
+                                e.actions.length > 80 ? "…" : "") : null,
+                            React.createElement("div", { style: { fontFamily: "Share Tech Mono,monospace", fontSize: 9, color: CYN, marginTop: 6, opacity: 0.7 } }, "tap to read full entry \u2192"))))),
                     !past.length ? React.createElement("div", { style: { color: MUT, fontFamily: "Space Grotesk,sans-serif", fontSize: 12, padding: "16px 0", textAlign: "center" } }, "NO ENTRIES YET \u2014 START TODAY") : null)))));
 }
 // ─── VIEW: MIND (single page — compact meditation/mood + open journal) ───────
@@ -3073,6 +3082,12 @@ function Home(_p) {
     const [loadingNote, setLoadingNote] = (0, useState)(false);
     const [goals, setGoals] = (0, useState)(() => LS.get("pgoals", []));
     const [gf, setGf] = (0, useState)({ text: "", horizon: "THIS YEAR" });
+    const [homeTodos, setHomeTodos] = (0, useState)(() => LS.get("ptodos", []));
+    const [quickTask, setQuickTask] = (0, useState)("");
+    const saveHomeTodos = (t) => { setHomeTodos(t); LS.set("ptodos", t); };
+    const toggleHomeTodo = (id) => { const t = homeTodos.map(x => x.id === id ? Object.assign(Object.assign({}, x), { done: !x.done }) : x); saveHomeTodos(t); };
+    const addQuickTask = () => { const v = quickTask.trim(); if (!v)
+        return; const item = { id: Date.now(), txt: v, pri: "med", done: false, date: todayLDS2 }; saveHomeTodos([item, ...homeTodos]); setQuickTask(""); };
     const saveGoals = g => { setGoals(g); LS.set("pgoals", g); };
     const addGoal = () => {
         if (!gf.text.trim())
@@ -3548,7 +3563,11 @@ function Home(_p) {
             return false;
         } }).map(e => (e.title || e.name) + (e.time ? " at " + e.time : ""));
         const goals = LS.get("pgoals", []).filter(g => !g.done).map(g => g.text);
-        const dayCtx = "Today's tasks: " + (todTodos.join("; ") || "none") + ". Today's events: " + (evs.join("; ") || "none") + ". Active goals: " + (goals.join("; ") || "none") + ".";
+        const hbs = LS.get("ph", []);
+        const hbDone = hbs.filter(h => h.done && h.done[now.toDateString()]).map(h => h.name);
+        const hbPending = hbs.filter(h => !(h.done && h.done[now.toDateString()])).map(h => h.name);
+        const habitsCtx = hbs.length ? " My habits today — done: " + (hbDone.join(", ") || "none") + "; still pending: " + (hbPending.join(", ") || "none") + "." : "";
+        const dayCtx = "Today's tasks: " + (todTodos.join("; ") || "none") + ". Today's events: " + (evs.join("; ") || "none") + ". Active goals: " + (goals.join("; ") || "none") + "." + habitsCtx;
         const prompt = "I'm replying to my daily briefing. My message: \"" + msg + "\"\n\n" + dayCtx + " Today is " + now.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" }) + ".\n\nDecide if I'm (a) ASKING a question / chatting about my day, or (b) trying to ADD/LOG something (a task, event, workout, meal, note, idea, grocery item, goal, etc).\n\nReturn ONLY JSON, no markdown:\n{\"action\":\"answer\" or \"file\",\"reply\":\"your short spoken response to me either way\",\"dest\":\"if file: todo|grocery|note|idea|language|goal|journal|workout|nutrition|event\",\"text\":\"cleaned content\",\"title\":\"short title\",\"date\":\"YYYY-MM-DD if a day/time is mentioned\",\"time\":\"HH:MM 24h if a time is mentioned (for events/tasks)\",\"priority\":\"high|med|low for todos\",\"name\":\"for workout/nutrition\",\"workoutType\":\"WEIGHT|CARDIO_LISS|CARDIO_HIIT|SPEED|STRENGTH|MOBILITY|SPORT|CIRCUIT|ENDURANCE|RECOVERY\",\"dur\":minutes,\"mealType\":\"BREAKFAST|LUNCH|DINNER|SNACK|DRINK\",\"kcal\":n,\"protein\":n,\"carbs\":n,\"fat\":n}\n\nIf I'm adding something with a specific day/time (like 'gym at 6pm' or 'meeting tomorrow 10am'), use dest 'event' and fill date+time. Keep 'reply' warm and brief, confirming what you logged or answering my question.";
         let res;
         try {
@@ -3658,10 +3677,33 @@ function Home(_p) {
         // Weather + news
         const wx = LS.get("pwx", null);
         const newsLine = await fetchBriefNews();
+        // Habits — today's progress + current streaks (give Pedro the same habit awareness)
+        const allHabits = LS.get("ph", []);
+        const habitsToday = allHabits.map(h => {
+            const done = (h.done && h.done[new Date().toDateString()]) ? "✓" : "✗";
+            // current streak
+            let n = 0;
+            const d = new Date();
+            for (let i = 0; i < 400; i++) {
+                const ds = d.toDateString();
+                if (h.done && h.done[ds]) {
+                    n++;
+                    d.setDate(d.getDate() - 1);
+                }
+                else if (i === 0) {
+                    d.setDate(d.getDate() - 1);
+                }
+                else
+                    break;
+            }
+            return h.name + " " + done + (n >= 2 ? " (" + n + "d streak)" : "");
+        });
+        const habitsDoneCount = allHabits.filter(h => h.done && h.done[new Date().toDateString()]).length;
+        const habitsLine = allHabits.length ? "HABITS today (" + habitsDoneCount + "/" + allHabits.length + " done): " + habitsToday.join("; ") : "";
         const ctx = "It is " + now.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) + " (" + timeWord + ") on " + now.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" }) + ".\n\n" +
             "RECOVERY: " + (lastSleep ? lastSleep.hrs + "h sleep" + (lastSleep.qual ? ", quality " + lastSleep.qual + "/10" : "") : "no sleep logged") + (wkY.length ? "; trained hard yesterday (" + wkY.map(w => w.name).join(", ") + ") so factor in fatigue" : "") + (energySignal ? "; " + energySignal : "") + "\n" +
             "TODAY'S TASKS — remaining: " + (openTod.length ? openTod.join("; ") : "all clear") + (doneTod.length ? " | already done: " + doneTod.join("; ") : "") + "\n" +
-            (focusLine ? focusLine + "\n" : "") +
+            (habitsLine ? habitsLine + "\n" : "") +
             "CALENDAR — still to come today: " + (evUpcoming.length ? evUpcoming.join("; ") : "nothing scheduled") + "\n" +
             "WORKOUT PLAN: " + (wkPlannedToday.length ? "planned today — " + wkPlannedToday.join(", ") : (wkDoneToday.length ? "already done today — " + wkDoneToday.join(", ") : "nothing logged for today")) + "\n" +
             (wx ? (() => {
@@ -3800,23 +3842,59 @@ function Home(_p) {
                 React.createElement("p", { style: { fontFamily: "Space Grotesk,sans-serif", fontSize: 12, color: MUT, marginBottom: 12 } }, "Pedro will pull your day together \u2014 weather, agenda, streaks, and your crypto watchlist."),
                 React.createElement(Btn, { onClick: generateBrief, color: CYN, disabled: briefLoading }, briefLoading ? "PEDRO IS THINKING…" : "☕ BRIEF ME"))))) : null),
         React.createElement("div", { style: { height: 16 } }),
-        focusEnabled ? (React.createElement(Card, null,
-            React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 } },
-                React.createElement("div", null,
-                    React.createElement(CT, null, "\uD83C\uDFAF Focus Mode"),
-                    React.createElement("p", { style: { fontFamily: "Space Grotesk,sans-serif", fontSize: 11, color: MUT, margin: 0 } }, "The only 3 things that actually matter today.")),
-                !focusOpen && !focus3 ? React.createElement(Btn, { onClick: () => { setFocusOpen(true); if (!focus3)
-                        generateFocus(); }, color: GOLD }, "ENTER FOCUS") : null,
-                (focusOpen || focus3) ? React.createElement("button", { onClick: generateFocus, disabled: focusLoading, style: { background: "none", border: "1px solid " + BRD, color: MUT, fontFamily: "Space Grotesk,sans-serif", fontSize: 11, padding: "6px 12px", borderRadius: 8, cursor: "pointer" } }, focusLoading ? "…" : "↻ Re-pick") : null),
-            (focusOpen || focus3) ? (React.createElement("div", { style: { marginTop: 14 } },
-                focusLoading && !focus3 ? React.createElement("div", { style: { fontFamily: "Share Tech Mono,monospace", fontSize: 11, color: MUT, textAlign: "center", padding: 12 } }, "Pedro is choosing your 3\u2026") : null,
-                (focus3 || []).map((f, i) => (React.createElement("div", { key: f.id, onClick: () => toggleFocus(f.id), style: { display: "flex", alignItems: "center", gap: 12, padding: "14px 16px", marginBottom: 8, borderRadius: 12, background: f.done ? "rgba(57,255,20,0.06)" : "rgba(255,165,0,0.05)", border: "1px solid " + (f.done ? GRN : GOLD), cursor: "pointer" } },
-                    React.createElement("span", { style: { fontFamily: "Sora,sans-serif", fontWeight: 700, fontSize: 18, color: f.done ? GRN : GOLD, opacity: 0.5 } }, i + 1),
-                    React.createElement("span", { style: { flex: 1, fontFamily: "Space Grotesk,sans-serif", fontSize: 14, color: TXT, textDecoration: f.done ? "line-through" : "none", opacity: f.done ? 0.5 : 1 } }, f.txt),
-                    React.createElement("div", { style: { width: 22, height: 22, borderRadius: 6, border: "1px solid " + (f.done ? GRN : MUT), display: "flex", alignItems: "center", justifyContent: "center", color: GRN, flexShrink: 0 } }, f.done ? "✓" : "")))),
-                focus3 && focus3.every(f => f.done) && focus3.length ? React.createElement("div", { style: { fontFamily: "Space Grotesk,sans-serif", fontSize: 13, color: GRN, textAlign: "center", padding: "8px 0" } }, "All 3 done. That's the day won. \uD83C\uDFC6") : null)) : null,
-            React.createElement("button", { onClick: disableFocus, style: { marginTop: 10, background: "none", border: "none", color: MUT, fontFamily: "Space Grotesk,sans-serif", fontSize: 10, cursor: "pointer", opacity: 0.6 } }, "turn off focus mode"))) : (React.createElement(Card, null,
-            React.createElement("button", { onClick: enableFocus, style: { background: "none", border: "none", color: MUT, fontFamily: "Space Grotesk,sans-serif", fontSize: 11, cursor: "pointer" } }, "\uD83C\uDFAF Turn Focus Mode back on"))),
+        (() => {
+            const tToday = homeTodos.filter(t => (t.date || todayLDS2) === todayLDS2);
+            const open = tToday.filter(t => !t.done);
+            const done = tToday.filter(t => t.done);
+            const prioOrder = { high: 0, med: 1, low: 2 };
+            open.sort((a, b) => { var _a, _b; return ((_a = prioOrder[a.pri]) !== null && _a !== void 0 ? _a : 1) - ((_b = prioOrder[b.pri]) !== null && _b !== void 0 ? _b : 1); });
+            return (React.createElement(Card, null,
+                React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 } },
+                    React.createElement(CT, null, "\u2705 Today's Tasks"),
+                    React.createElement("span", { style: { fontFamily: "Share Tech Mono,monospace", fontSize: 11, color: open.length ? CYN : GRN } }, open.length ? open.length + " left" : "all done 🏆")),
+                React.createElement("div", { style: { display: "flex", gap: 8, marginBottom: 12 } },
+                    React.createElement("input", { value: quickTask, onChange: e => setQuickTask(e.target.value), onKeyDown: e => { if (e.key === "Enter")
+                            addQuickTask(); }, placeholder: "Add a task for today\u2026", style: { flex: 1, background: "rgba(0,0,0,0.4)", border: "1px solid " + BRD, color: TXT, fontFamily: "Space Grotesk,sans-serif", fontSize: 14, padding: "11px 14px", borderRadius: 10, outline: "none" } }),
+                    React.createElement(Btn, { onClick: addQuickTask, color: CYN }, "ADD")),
+                open.map(t => (React.createElement("div", { key: t.id, onClick: () => toggleHomeTodo(t.id), style: { display: "flex", alignItems: "center", gap: 12, padding: "13px 14px", marginBottom: 7, borderRadius: 11, background: "rgba(255,255,255,0.03)", border: "1px solid " + (t.pri === "high" ? RED : BRD), cursor: "pointer" } },
+                    React.createElement("div", { style: { width: 22, height: 22, borderRadius: 6, border: "1px solid " + MUT, flexShrink: 0 } }),
+                    React.createElement("span", { style: { flex: 1, fontFamily: "Space Grotesk,sans-serif", fontSize: 14, color: TXT } }, t.txt || t.text),
+                    t.pri === "high" ? React.createElement("span", { style: { fontFamily: "Share Tech Mono,monospace", fontSize: 9, color: RED, border: "1px solid " + RED, padding: "2px 5px", borderRadius: 5 } }, "HIGH") : null))),
+                !open.length && !done.length ? React.createElement("div", { style: { fontFamily: "Space Grotesk,sans-serif", fontSize: 13, color: MUT, textAlign: "center", padding: "10px 0" } }, "Nothing yet \u2014 add your first task above.") : null,
+                done.length ? (React.createElement("div", { style: { marginTop: 6 } },
+                    React.createElement("div", { style: { fontFamily: "Share Tech Mono,monospace", fontSize: 10, color: MUT, margin: "8px 0 6px" } },
+                        "DONE (",
+                        done.length,
+                        ")"),
+                    done.map(t => (React.createElement("div", { key: t.id, onClick: () => toggleHomeTodo(t.id), style: { display: "flex", alignItems: "center", gap: 12, padding: "10px 14px", marginBottom: 5, borderRadius: 11, background: "rgba(57,255,20,0.04)", border: "1px solid " + BRD, cursor: "pointer", opacity: 0.6 } },
+                        React.createElement("div", { style: { width: 22, height: 22, borderRadius: 6, border: "1px solid " + GRN, display: "flex", alignItems: "center", justifyContent: "center", color: GRN, flexShrink: 0 } }, "\u2713"),
+                        React.createElement("span", { style: { flex: 1, fontFamily: "Space Grotesk,sans-serif", fontSize: 14, color: TXT, textDecoration: "line-through" } }, t.txt || t.text)))))) : null));
+        })(),
+        React.createElement("div", { style: { height: 16 } }),
+        React.createElement(Card, null,
+            React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 16 } },
+                React.createElement("div", { style: { position: "relative", width: 76, height: 76, flexShrink: 0 } },
+                    React.createElement("svg", { width: "76", height: "76", style: { transform: "rotate(-90deg)" } },
+                        React.createElement("circle", { fill: "none", stroke: "rgba(255,255,255,0.06)", strokeWidth: "6", cx: "38", cy: "38", r: "32" }),
+                        React.createElement("circle", { fill: "none", stroke: scoreColor(dayScore), strokeWidth: "6", strokeLinecap: "round", cx: "38", cy: "38", r: "32", strokeDasharray: 2 * Math.PI * 32, strokeDashoffset: 2 * Math.PI * 32 * (1 - dayScore / 100), style: { transition: "stroke-dashoffset 0.8s" } })),
+                    React.createElement("div", { style: { position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", textAlign: "center" } },
+                        React.createElement("div", { style: { fontFamily: "Sora,sans-serif", fontSize: 20, fontWeight: 700, color: scoreColor(dayScore) } }, dayScore))),
+                React.createElement("div", { style: { flex: 1 } },
+                    React.createElement("div", { style: { fontFamily: "Orbitron,monospace", fontSize: 11, color: CYN, letterSpacing: 2, marginBottom: 4 } }, "\u26A1 PEDRO SCORE \u00B7 TODAY"),
+                    React.createElement("div", { style: { fontFamily: "Space Grotesk,sans-serif", fontSize: 12, color: MUT, lineHeight: 1.5 } },
+                        "Grade ",
+                        grade(dayScore),
+                        " \u00B7 month ",
+                        monthScore),
+                    React.createElement("div", { style: { display: "flex", flexWrap: "wrap", gap: "3px 10px", marginTop: 6, fontFamily: "Space Grotesk,sans-serif", fontSize: 10, color: MUT } },
+                        React.createElement("span", null,
+                            "\u2705 ",
+                            doneToday,
+                            "/",
+                            totalHabits),
+                        React.createElement("span", null, workedOut ? "💪" : "💤"),
+                        React.createElement("span", null, ateLogged ? "🍽️" : "—"),
+                        React.createElement("span", null, journaled ? "📓" : "—"))))),
         React.createElement("div", { style: { height: 16 } }),
         energy ? (React.createElement("div", { style: { marginBottom: 16, padding: "12px 16px", borderRadius: 12, background: energy.level === "low" ? "rgba(249,115,22,0.10)" : "rgba(57,255,20,0.08)", border: "1px solid " + (energy.level === "low" ? "#f97316" : GRN), display: "flex", alignItems: "center", gap: 10 } },
             React.createElement("span", { style: { fontSize: 18 } }, energy.level === "low" ? "🪫" : "🔋"),
@@ -4519,6 +4597,73 @@ function ItemEditor() {
 // helper any component can call to open the editor
 const editItem = (type, item) => { if (typeof window !== "undefined")
     window.dispatchEvent(new CustomEvent("pedro-edit-item", { detail: { type, item } })); };
+const viewItem = (type, item) => { if (typeof window !== "undefined")
+    window.dispatchEvent(new CustomEvent("pedro-view-item", { detail: { type, item } })); };
+// ─── DETAIL VIEWER: tap any item to read the whole thing ─────────────────────
+function DetailViewer() {
+    const [req, setReq] = (0, useState)(null);
+    (0, useEffect)(() => {
+        const h = (e) => setReq(e.detail || null);
+        window.addEventListener("pedro-view-item", h);
+        return () => window.removeEventListener("pedro-view-item", h);
+    }, []);
+    if (!req)
+        return null;
+    const { type, item } = req;
+    const close = () => setReq(null);
+    const Row = ({ label, value }) => value || value === 0 ? (React.createElement("div", { style: { display: "flex", justifyContent: "space-between", gap: 12, padding: "8px 0", borderBottom: "1px solid " + BRD } },
+        React.createElement("span", { style: { fontFamily: "Share Tech Mono,monospace", fontSize: 11, color: MUT, letterSpacing: 1 } }, label),
+        React.createElement("span", { style: { fontFamily: "Space Grotesk,sans-serif", fontSize: 13, color: TXT, textAlign: "right" } }, value))) : null;
+    let title = "", body = null;
+    if (type === "workout") {
+        title = item.name || "Workout";
+        body = (React.createElement("div", null,
+            React.createElement(Row, { label: "TYPE", value: (item.type || "").replace(/_/g, " ") }),
+            React.createElement(Row, { label: "DATE", value: item.date }),
+            React.createElement(Row, { label: "STATUS", value: item.status }),
+            React.createElement(Row, { label: "DURATION", value: item.dur ? item.dur + " min" : null }),
+            React.createElement(Row, { label: "INTENSITY", value: item.intensity ? "RPE " + item.intensity : null }),
+            React.createElement(Row, { label: "LOCATION", value: item.loc }),
+            item.notes ? React.createElement("div", { style: { marginTop: 14 } },
+                React.createElement("div", { style: { fontFamily: "Share Tech Mono,monospace", fontSize: 10, color: MUT, marginBottom: 6, letterSpacing: 1 } }, "NOTES"),
+                React.createElement("div", { style: { fontFamily: "Space Grotesk,sans-serif", fontSize: 14, color: TXT, lineHeight: 1.65, whiteSpace: "pre-wrap" } }, item.notes)) : null));
+    }
+    else if (type === "journal") {
+        title = "Journal · " + (item.date || "");
+        const block = (label, txt) => txt ? React.createElement("div", { style: { marginBottom: 16 } },
+            React.createElement("div", { style: { fontFamily: "Share Tech Mono,monospace", fontSize: 10, color: CYN, marginBottom: 6, letterSpacing: 1 } }, label),
+            React.createElement("div", { style: { fontFamily: "Space Grotesk,sans-serif", fontSize: 14, color: TXT, lineHeight: 1.65, whiteSpace: "pre-wrap" } }, txt)) : null;
+        body = (React.createElement("div", null,
+            block("FREE WRITE", item.free),
+            block("ACTIONS", item.actions),
+            block("THOUGHTS", item.thoughts),
+            block("DECISIONS", item.decisions),
+            block("ONE LINE", item.line),
+            !item.free && !item.actions && !item.thoughts && !item.decisions && !item.line ? React.createElement("div", { style: { color: MUT, fontFamily: "Space Grotesk,sans-serif", fontSize: 13 } }, "Empty entry.") : null));
+    }
+    else {
+        // generic fallback (notes, ideas, education, goals)
+        title = item.title || item.text || item.name || "Detail";
+        body = (React.createElement("div", null,
+            item.topic ? React.createElement(Row, { label: "TOPIC", value: item.topic }) : null,
+            item.cat ? React.createElement(Row, { label: "CATEGORY", value: item.cat }) : null,
+            item.horizon ? React.createElement(Row, { label: "HORIZON", value: item.horizon }) : null,
+            item.date ? React.createElement(Row, { label: "DATE", value: item.date }) : null,
+            item.url ? React.createElement("div", { style: { marginTop: 12 } },
+                React.createElement("a", { href: item.url, target: "_blank", rel: "noopener noreferrer", style: { color: CYN, fontFamily: "Space Grotesk,sans-serif", fontSize: 13, wordBreak: "break-all" } }, item.url)) : null,
+            (item.body || item.text) ? React.createElement("div", { style: { marginTop: 14, fontFamily: "Space Grotesk,sans-serif", fontSize: 14, color: TXT, lineHeight: 1.65, whiteSpace: "pre-wrap" } }, item.body || item.text) : null));
+    }
+    return (React.createElement("div", { onClick: close, style: { position: "fixed", inset: 0, background: "rgba(10,26,51,0.92)", zIndex: 999994, display: "flex", alignItems: "flex-end", justifyContent: "center" } },
+        React.createElement("div", { onClick: e => e.stopPropagation(), style: { width: "100%", maxWidth: 520, maxHeight: "85vh", overflowY: "auto", background: BG2, border: "1px solid " + CYN, borderRadius: "20px 20px 0 0", padding: "20px 20px calc(24px + env(safe-area-inset-bottom,0px))" } },
+            React.createElement("div", { style: { width: 40, height: 4, borderRadius: 3, background: MUT, margin: "0 auto 16px", opacity: 0.5 } }),
+            React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, marginBottom: 16 } },
+                React.createElement("span", { style: { fontFamily: "Sora,sans-serif", fontSize: 18, fontWeight: 700, color: TXT, lineHeight: 1.3 } }, title),
+                React.createElement("span", { onClick: close, style: { cursor: "pointer", color: MUT, fontSize: 24, lineHeight: 1, flexShrink: 0 } }, "\u00D7")),
+            body,
+            React.createElement("div", { style: { display: "flex", gap: 8, marginTop: 22 } },
+                React.createElement("button", { onClick: () => { close(); editItem(type, item); }, style: { flex: 1, background: "rgba(0,212,255,0.08)", border: "1px solid " + CYN, color: CYN, fontFamily: "Space Grotesk,sans-serif", fontWeight: 600, fontSize: 14, padding: "12px", borderRadius: 11, cursor: "pointer" } }, "\u270E Edit"),
+                React.createElement("button", { onClick: close, style: { background: "none", border: "1px solid " + BRD, color: MUT, fontFamily: "Space Grotesk,sans-serif", fontSize: 14, padding: "12px 18px", borderRadius: 11, cursor: "pointer" } }, "Close")))));
+}
 // ─── WEATHER: full 7-day forecast for saved cities + search anywhere ─────────
 function WeatherView(_p) {
     const wxIcon = c => c === 0 ? "☀️" : c <= 3 ? "⛅" : c <= 48 ? "🌫️" : c <= 67 ? "🌧️" : c <= 77 ? "🌨️" : c <= 82 ? "🌦️" : c <= 99 ? "⛈️" : "🌡️";
@@ -4839,6 +4984,7 @@ const PAGES = [
 // ─── APP ─────────────────────────────────────────────────────────────────────
 function App() {
     const [page, setPage] = (0, useState)("home");
+    const [moreOpen, setMoreOpen] = (0, useState)(false);
     const [aiOpen, setAO] = (0, useState)(false);
     const [msgs, setMsgs] = (0, useState)([{ role: "ai", text: "PEDRO ONLINE.\n\nYour personal intelligence system is ready. All modules active — habits, fitness, finance, crypto, news, research, wellness.\n\nWhat do you need?" }]);
     const [toasts, setTs] = (0, useState)([]);
@@ -4882,6 +5028,7 @@ function App() {
         "gemini-pro": { c: "#4f8cff", l: "Pedro · running on Gemini Pro" },
         "gemini-flash": { c: "#8ab4ff", l: "Pedro · running on Gemini Flash" },
         perplexity: { c: "#a855f7", l: "Pedro · live search (Perplexity)" },
+        tavily: { c: "#10b981", l: "Pedro · live search (Tavily, free)" },
     };
     const engineColor = (ENGINE_MAP[engine] || { c: "#2a4a55" }).c;
     const engineLabel = (ENGINE_MAP[engine] || { l: "Pedro" }).l;
@@ -4920,6 +5067,7 @@ function App() {
     return (React.createElement(React.Fragment, null,
         React.createElement(GlobalCSS, null),
         React.createElement(ItemEditor, null),
+        React.createElement(DetailViewer, null),
         React.createElement(GlobalSearch, null),
         React.createElement("div", { style: { height: "100%", minHeight: "100dvh", display: "flex", flexDirection: "column", position: "relative", zIndex: 1, background: BG } },
             React.createElement("div", { style: { flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "space-between", padding: "calc(env(safe-area-inset-top,0px) + 8px) 18px 8px", borderBottom: "1px solid " + BRD, background: "rgba(10,26,51,0.95)", position: "relative", zIndex: 100, minHeight: 56, boxSizing: "border-box" } },
@@ -4967,11 +5115,32 @@ function App() {
                             React.createElement("span", { style: { fontFamily: "Share Tech Mono,monospace", fontSize: 11, color: MUT } }, dt)),
                         page !== "home" ? React.createElement(GlobalCapture, { toast: toast }) : null,
                         SM[page]))),
-            React.createElement("div", { id: "bnav", style: { flexShrink: 0, background: "rgba(15,34,64,0.98)", borderTop: "1px solid " + BRD, position: "relative", zIndex: 100, paddingBottom: "env(safe-area-inset-bottom,0px)" } },
-                React.createElement("div", { style: { display: "flex", height: 60, overflowX: "auto" } }, PAGES.map(p => (React.createElement("button", { key: p.id, onClick: () => setPage(p.id), style: { flex: "0 0 auto", minWidth: 55, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, background: "none", border: "none", color: page === p.id ? CYN : MUT, cursor: "pointer", padding: "4px 6px", fontFamily: "Orbitron,monospace", fontSize: 6, letterSpacing: 1 } },
-                    React.createElement("span", { style: { fontSize: 18, textShadow: page === p.id ? GLOW : "none" } }, p.icon),
-                    p.s,
-                    page === p.id ? React.createElement("div", { style: { width: 4, height: 4, borderRadius: "50%", background: CYN, boxShadow: "0 0 6px " + CYN } }) : null)))))),
+            React.createElement("div", { id: "bnav", style: { flexShrink: 0, background: "rgba(15,34,64,0.98)", borderTop: "1px solid " + BRD, position: "relative", zIndex: 100, paddingBottom: "env(safe-area-inset-bottom,0px)", backdropFilter: "blur(10px)" } },
+                React.createElement("div", { style: { display: "flex", height: 62 } }, (() => {
+                    const primary = ["home", "planner", "body", "finance"];
+                    const primaryPages = primary.map(id => PAGES.find(p => p.id === id)).filter(Boolean);
+                    const moreIds = PAGES.filter(p => !primary.includes(p.id)).map(p => p.id);
+                    const inMore = moreIds.includes(page);
+                    const tabs = primaryPages.concat([{ id: "__more__", icon: "⋯", l: "MORE", s: "MORE" }]);
+                    return tabs.map(p => {
+                        const active = p.id === "__more__" ? (moreOpen || inMore) : (page === p.id && !moreOpen);
+                        return (React.createElement("button", { key: p.id, onClick: () => { if (p.id === "__more__") {
+                                setMoreOpen(o => !o);
+                            }
+                            else {
+                                setMoreOpen(false);
+                                setPage(p.id);
+                            } }, style: { flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 3, background: "none", border: "none", color: active ? CYN : MUT, cursor: "pointer", padding: "8px 4px", minHeight: 56 } },
+                            React.createElement("span", { style: { fontSize: 22, textShadow: active ? GLOW : "none", lineHeight: 1 } }, p.icon),
+                            React.createElement("span", { style: { fontFamily: "Space Grotesk,sans-serif", fontSize: 10, fontWeight: 600, letterSpacing: 0.5 } }, p.l)));
+                    });
+                })())),
+            moreOpen ? (React.createElement("div", { onClick: () => setMoreOpen(false), style: { position: "fixed", inset: 0, background: "rgba(10,26,51,0.6)", zIndex: 200, display: "flex", alignItems: "flex-end" } },
+                React.createElement("div", { onClick: e => e.stopPropagation(), style: { width: "100%", background: "rgba(15,34,64,0.99)", borderTop: "1px solid " + CYN, borderRadius: "20px 20px 0 0", padding: "18px 16px calc(18px + env(safe-area-inset-bottom,0px))", animation: "pedroSlideIn 0.25s ease" } },
+                    React.createElement("div", { style: { width: 40, height: 4, borderRadius: 3, background: MUT, margin: "0 auto 16px", opacity: 0.5 } }),
+                    React.createElement("div", { style: { display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10 } }, PAGES.filter(p => !["home", "planner", "body", "finance"].includes(p.id)).map(p => (React.createElement("button", { key: p.id, onClick: () => { setPage(p.id); setMoreOpen(false); }, style: { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, background: page === p.id ? "rgba(0,212,255,0.1)" : "rgba(255,255,255,0.03)", border: "1px solid " + (page === p.id ? CYN : BRD), borderRadius: 14, padding: "16px 8px", cursor: "pointer", color: page === p.id ? CYN : TXT, minHeight: 78 } },
+                        React.createElement("span", { style: { fontSize: 26, lineHeight: 1 } }, p.icon),
+                        React.createElement("span", { style: { fontFamily: "Space Grotesk,sans-serif", fontSize: 11, fontWeight: 600 } }, p.l)))))))) : null),
         React.createElement(AIDrawer, { open: aiOpen, onClose: () => setAO(false), msgs: msgs, onSend: sendAI }),
         React.createElement(Toasts, { list: toasts })));
 }
@@ -5264,28 +5433,70 @@ function pedroExport() {
     document.body.appendChild(modal);
 }
 function pedroImport() {
-    // open the native file picker → user selects pedro-backup.json from Drive/Files
+    // chooser: pick a file, OR paste a Google Drive (or any) share link
+    const modal = document.createElement('div');
+    modal.id = 'pedro-import-modal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(10,26,51,0.95);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;';
+    modal.innerHTML = '<div style="max-width:440px;width:100%;background:#0f2240;border:1px solid rgba(0,212,255,0.3);padding:24px;box-sizing:border-box;border-radius:16px;max-height:90vh;overflow-y:auto;">'
+        + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;"><span style="font-family:Sora,sans-serif;font-size:16px;color:#00d4ff;font-weight:700;">⬆ Restore your data</span><span onclick="pedroCloseImport()" style="cursor:pointer;color:#6f9bad;font-size:22px;">×</span></div>'
+        + '<div style="font-family:Space Grotesk,sans-serif;font-size:12px;color:#6f9bad;margin-bottom:16px;line-height:1.6;">Two ways — use whichever is easier:</div>'
+        + '<button onclick="pedroPickFile()" style="width:100%;background:rgba(0,212,255,0.08);border:1px solid #00d4ff;color:#00d4ff;font-family:Space Grotesk,sans-serif;font-weight:600;font-size:14px;padding:13px;cursor:pointer;border-radius:11px;margin-bottom:8px;">📁 Pick the backup file</button>'
+        + '<div style="font-family:Space Grotesk,sans-serif;font-size:10px;color:#6f9bad;margin-bottom:18px;text-align:center;">opens Files — tap Browse → Google Drive</div>'
+        + '<div style="font-family:Share Tech Mono,monospace;font-size:10px;color:#6f9bad;margin-bottom:6px;letter-spacing:1px;">— OR PASTE A GOOGLE DRIVE LINK —</div>'
+        + '<input id="pedro-drive-link" type="text" placeholder="paste the Drive share link" style="width:100%;background:rgba(0,0,0,0.5);border:1px solid rgba(57,255,20,0.3);color:#b6d4e0;font-family:monospace;font-size:12px;padding:11px;margin-bottom:6px;outline:none;box-sizing:border-box;border-radius:10px;" />'
+        + '<div style="font-family:Space Grotesk,sans-serif;font-size:10px;color:#6f9bad;margin-bottom:10px;line-height:1.5;">On your computer: Drive → right-click the backup → Share → <b>Anyone with the link</b> → Copy link.</div>'
+        + '<button onclick="pedroImportFromLink()" style="width:100%;background:rgba(57,255,20,0.08);border:1px solid #39ff14;color:#39ff14;font-family:Space Grotesk,sans-serif;font-weight:600;font-size:14px;padding:13px;cursor:pointer;border-radius:11px;">🔗 Restore from link</button>'
+        + '<div id="pedro-import-msg" style="font-family:Space Grotesk,sans-serif;font-size:11px;margin-top:12px;color:#6f9bad;min-height:14px;line-height:1.5;"></div>'
+        + '</div>';
+    document.body.appendChild(modal);
+}
+function pedroCloseImport(){ var m=document.getElementById('pedro-import-modal'); if(m) m.remove(); }
+function _pedroApplyData(parsed) {
+    var data = (parsed && parsed.data) ? parsed.data : parsed;
+    var n = 0;
+    Object.keys(data).forEach(function(k){ if (k.charAt && k.charAt(0)==='p') { try { localStorage.setItem(k, data[k]); n++; } catch(e){} } });
+    return n;
+}
+function pedroPickFile() {
     var input = document.createElement("input");
-    input.type = "file";
-    input.accept = "application/json,.json";
+    input.type = "file"; input.accept = "application/json,.json";
     input.onchange = function(e) {
-        var file = e.target.files && e.target.files[0];
-        if (!file) return;
+        var file = e.target.files && e.target.files[0]; if (!file) return;
         var reader = new FileReader();
-        reader.onload = function() {
-            try {
-                var parsed = JSON.parse(String(reader.result));
-                var data = parsed.data || parsed; // support both new and old shapes
-                var n = 0;
-                Object.keys(data).forEach(function(k){ if (k.charAt && k.charAt(0)==='p') { try { localStorage.setItem(k, data[k]); n++; } catch(e){} } });
-                pedroImportDone(true, n);
-            } catch(err) { pedroImportDone(false, 0); }
-        };
-        reader.onerror = function(){ pedroImportDone(false, 0); };
+        reader.onload = function() { try { var n = _pedroApplyData(JSON.parse(String(reader.result))); pedroCloseImport(); pedroImportDone(true, n); } catch(err) { pedroCloseImport(); pedroImportDone(false, 0); } };
+        reader.onerror = function(){ pedroCloseImport(); pedroImportDone(false, 0); };
         reader.readAsText(file);
     };
     input.click();
 }
+// Convert a Google Drive share link into a direct-download URL, then fetch it
+function pedroImportFromLink() {
+    var link = (document.getElementById('pedro-drive-link').value || '').trim();
+    var msg = document.getElementById('pedro-import-msg');
+    if (!link) { if(msg){ msg.style.color="#ff3a3a"; msg.textContent="Paste a link first."; } return; }
+    // extract Drive file id from common link formats
+    var id = "";
+    var m1 = link.match(/\/file\/d\/([^/]+)/); if (m1) id = m1[1];
+    if (!id) { var m2 = link.match(/[?&]id=([^&]+)/); if (m2) id = m2[1]; }
+    if (!id) { var m3 = link.match(/\/d\/([^/]+)/); if (m3) id = m3[1]; }
+    var url = id ? ("https://drive.google.com/uc?export=download&id=" + id) : link; // fall back to raw link for non-Drive hosts
+    if(msg){ msg.style.color="#00d4ff"; msg.textContent="Fetching your backup…"; }
+    fetch(url).then(function(r){ if(!r.ok) throw new Error("fetch failed"); return r.text(); })
+        .then(function(txt){
+            var parsed;
+            try { parsed = JSON.parse(txt); }
+            catch(e) {
+                // Drive sometimes returns an HTML wrapper; try to find JSON inside
+                var s = txt.indexOf('{'), eo = txt.lastIndexOf('}');
+                if (s >= 0 && eo > s) { parsed = JSON.parse(txt.slice(s, eo+1)); } else { throw new Error("not json"); }
+            }
+            var n = _pedroApplyData(parsed); pedroCloseImport(); pedroImportDone(true, n);
+        })
+        .catch(function(){ if(msg){ msg.style.color="#ff3a3a"; msg.textContent="Couldn't load that link. Make sure it's set to 'Anyone with the link' and is the backup file."; } });
+}
+window.pedroCloseImport = pedroCloseImport;
+window.pedroPickFile = pedroPickFile;
+window.pedroImportFromLink = pedroImportFromLink;
 function pedroImportDone(ok, n) {
     const modal = document.createElement('div');
     modal.style.cssText = 'position:fixed;inset:0;background:rgba(10,26,51,0.95);z-index:99999;display:flex;align-items:center;justify-content:center;padding:20px;';
@@ -5302,7 +5513,10 @@ function pedroImportDone(ok, n) {
 // ── LIVE WEB SEARCH (Perplexity-first, for news/current info) ────────────────
 async function pedroLiveSearch(prompt, sys, maxT) {
     var pkey = localStorage.getItem('pedro_pplx_key') || '';
+    var tkey = localStorage.getItem('pedro_tavily_key') || '';
     var system = sys || "You are Pedro, a sharp analyst. Use live web data. Be specific with real names, numbers and dates.";
+
+    // 1) Perplexity (best, paid) — if key present
     if (pkey) {
         try {
             var pr = await fetch("https://api.perplexity.ai/chat/completions", {
@@ -5315,11 +5529,39 @@ async function pedroLiveSearch(prompt, sys, maxT) {
                 try { window._lastEngine = "perplexity"; window.dispatchEvent(new CustomEvent("pedro-engine", { detail: "perplexity" })); } catch(e){}
                 return { live: true, text: pd.choices[0].message.content };
             }
-            if (pd.error) return { live: false, text: null, err: (pd.error.message || "Perplexity error") };
-        } catch(e) { return { live: false, text: null, err: (e.message || "connection failed") }; }
+            // if Perplexity errors (e.g. out of credit), fall through to Tavily
+        } catch(e) { /* fall through to Tavily */ }
     }
-    // No Perplexity key: fall back to normal ask() but signal it's not live
-    var fallback = await ask(prompt, system, maxT || 2000, "claude-sonnet-4-20250514");
+
+    // 2) Tavily (free, 1000/mo) — fetches live web results, then Gemini/brain writes them up
+    if (tkey) {
+        try {
+            var tr = await fetch("https://api.tavily.com/search", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ api_key: tkey, query: prompt, search_depth: "basic", max_results: 8, include_answer: true, topic: "news" }),
+            });
+            var td = await tr.json();
+            if (td && (td.results || td.answer)) {
+                // build a context block from the live results
+                var NL = String.fromCharCode(10);
+                var ctx = "";
+                if (td.answer) ctx += "Summary: " + td.answer + NL + NL;
+                (td.results || []).forEach(function(r, i){ ctx += (i+1) + ". " + (r.title||"") + " - " + (r.content||"").slice(0, 300) + " (" + (r.url||"") + ")" + NL; });
+                // hand the live facts to the brain to write up in Pedro's voice / requested format
+                var writeup = await ask(
+                    "Here is live web search data (today is " + new Date().toDateString() + "): " + ctx + " Using ONLY the facts above, answer this request: " + prompt,
+                    system + " Base everything on the provided live data. If the data doesn't cover something, say so rather than inventing it.",
+                    maxT || 2000
+                );
+                try { window._lastEngine = "tavily"; window.dispatchEvent(new CustomEvent("pedro-engine", { detail: "tavily" })); } catch(e){}
+                return { live: true, text: writeup };
+            }
+        } catch(e) { /* fall through */ }
+    }
+
+    // 3) No live source available: normal ask(), flagged not-live
+    var fallback = await ask(prompt, system, maxT || 2000);
     return { live: false, text: fallback };
 }
 window.pedroLiveSearch = pedroLiveSearch;
@@ -5331,25 +5573,50 @@ window.pedroSetBrain = function(b){ localStorage.setItem("pedro_brain", b); try 
 // ── VISION: analyse an image (workout screenshot, etc.) with Claude ──────────
 async function pedroAskImage(base64Data, mediaType, prompt) {
     var key = localStorage.getItem('pedro_api_key') || '';
-    if (!key) return "Add your Anthropic API key (⚙ KEYS) to use photo analysis.";
-    try {
-        var res = await fetch("https://api.anthropic.com/v1/messages", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
-            body: JSON.stringify({
-                model: "claude-sonnet-4-20250514",
-                max_tokens: 1500,
-                messages: [{ role: "user", content: [
-                    { type: "image", source: { type: "base64", media_type: mediaType, data: base64Data } },
-                    { type: "text", text: prompt }
-                ]}]
-            })
-        });
-        var d = await res.json();
-        if (d && d.content && d.content[0] && d.content[0].text) return d.content[0].text;
-        if (d && d.error) return "Error: " + (d.error.message || "vision request failed");
-        return "Could not read the image.";
-    } catch (e) { return "Error: " + (e.message || "vision request failed"); }
+    var gkey = localStorage.getItem('pedro_gemini_key') || '';
+
+    // 1) Anthropic (if key present) — best quality vision
+    if (key) {
+        try {
+            var res = await fetch("https://api.anthropic.com/v1/messages", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
+                body: JSON.stringify({
+                    model: "claude-sonnet-4-20250514",
+                    max_tokens: 1500,
+                    messages: [{ role: "user", content: [
+                        { type: "image", source: { type: "base64", media_type: mediaType, data: base64Data } },
+                        { type: "text", text: prompt }
+                    ]}]
+                })
+            });
+            var d = await res.json();
+            if (d && d.content && d.content[0] && d.content[0].text) { try { window._lastEngine="anthropic"; window.dispatchEvent(new CustomEvent("pedro-engine",{detail:"anthropic"})); } catch(e){} return d.content[0].text; }
+            // if Anthropic errors (no credit etc.), fall through to Gemini
+        } catch (e) { /* fall through to Gemini */ }
+    }
+
+    // 2) Gemini vision (FREE) — works with just a Gemini key
+    if (gkey) {
+        var GV = ["gemini-2.5-flash", "gemini-flash-latest", "gemini-2.0-flash", "gemini-2.5-pro"];
+        for (var i = 0; i < GV.length; i++) {
+            try {
+                var gr = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + GV[i] + ":generateContent?key=" + gkey, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [ { inline_data: { mime_type: mediaType, data: base64Data } }, { text: prompt } ] }], generationConfig: { maxOutputTokens: 2000, thinkingConfig: { thinkingBudget: 0 } } }),
+                });
+                var gd = await gr.json();
+                if (gd.error) continue; // try next model
+                if (gd.candidates && gd.candidates[0] && gd.candidates[0].content && gd.candidates[0].content.parts) {
+                    try { window._lastEngine = (GV[i].indexOf("pro")>=0?"gemini-pro":"gemini-flash"); window.dispatchEvent(new CustomEvent("pedro-engine",{detail:window._lastEngine})); } catch(e){}
+                    return gd.candidates[0].content.parts.map(function(p){ return p.text||""; }).join("");
+                }
+            } catch (e) { /* try next */ }
+        }
+    }
+
+    if (!key && !gkey) return "Add a Gemini key (free) or Anthropic key in ⚙ Data → API Keys to read images.";
+    return "Couldn't read the image — try again, or check your API key has access to vision.";
 }
 window.pedroAskImage = pedroAskImage;
 
